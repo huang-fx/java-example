@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper中一定要写一个namespace属性说明对应的mapper文件 -->
+<mapper namespace="com.example.sp_demo4.repository.UserRepository">
+    <!-- 通过id告诉spring boot这个select给UserRepository哪个方法 -->
+    <select id="getUserList" resultType="com.example.sp_demo4.model.entity.User">
+        <!-- 具体的查询语句写在这里 -->
+        select * from user
+        <where>
+            <if test="userList.id != null and userList.id != ''">
+                and id like concat('%', #{userList.id}, '%')
+            </if>
+            <if test="userList.username != null and userList.username != ''">
+                and username like concat('%', #{userList.username}, '%')
+            </if>
+            <!-- 大于小于号是不识别的 >要写成&gt; <要写成&lt; -->
+            <if test="userList.startTime != null and userList.startTime != ''">
+                and create_time &gt; #{userList.startTime}
+            </if>
+            <if test="userList.endTime != null and userList.endTime != ''">
+                and create_time &lt; #{userList.endTime}
+            </if>
+        </where>
+        limit #{userList.pageSize} offset #{offset}
+    </select>
+    <select id="getCountUser" resultType="int">
+        select count(*) from user
+    </select>
+    <select id="getUserPageIdList">
+        select u.id,u.username,r.role_name,rp.page_id from user as u
+        left join user_role as ur on u.id=ur.user_id
+        left join roles as r on ur.role_id=r.role_id
+        left join role_page as rp on rp.role_id= ur.role_id
+        where u.id=#{id}
+
+    </select>
+</mapper>

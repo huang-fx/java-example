@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.sp_demo4.repository.PagesRepository">
+    <select id="getPageModules" resultType="com.example.sp_demo4.model.entity.PageModules">
+        select group_concat(p.page_id) as page_ids,p.module_id,m.module_name from pages as p
+        left join modules as m on p.module_id=m.module_id
+        where p.page_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        group by p.module_id
+    </select>
+</mapper>
