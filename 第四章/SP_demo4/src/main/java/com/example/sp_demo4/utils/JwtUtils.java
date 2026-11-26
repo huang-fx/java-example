@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Component
 public class JwtUtils {
-    private static String signStr = System.getenv("JWT_SECRET");
+    private static String signStr = "fghujikomn76890-=frdcxszawerfcvgb";
     private static Key sign = Keys.hmacShaKeyFor(signStr.getBytes(StandardCharsets.UTF_8));
     public String getToken(String id) {
         Map<String, String> map = new HashMap<>();

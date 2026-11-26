@@ -1,6 +1,7 @@
 package com.example.sp_demo4.controller;
 
 import com.example.sp_demo4.model.dto.InsertOrderDTO;
+import com.example.sp_demo4.model.dto.OrderIdDTO;
 import com.example.sp_demo4.model.vo.BaseVo;
 import com.example.sp_demo4.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,5 +18,13 @@ public class OrderController {
     @PostMapping("/insert")
     public BaseVo<Object> insert(@RequestBody InsertOrderDTO insertOrderDTO) {
         return orderService.insertOrder(insertOrderDTO);
+    }
+    @PostMapping("/finish")
+    public BaseVo<Object> finish(@RequestBody OrderIdDTO orderIdDTO) {
+        try {
+            return orderService.finishOrder(orderIdDTO.getOrderId());
+        } catch (RuntimeException err) {
+            return BaseVo.fail(err.getMessage(), null);
+        }
     }
 }
