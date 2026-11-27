@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.sp_demo4.repository.OrderRepository">
+    <select id="getCount">
+        select sum(orders.money) as sumMoney, count(*) as sumNum from orders
+        <if test="start!=null and end!=null">
+            <where>
+                and finish_time &gt; #{start}
+                and finish_time &lt; #{end}
+            </where>
+        </if>
+    </select>
+    <select id="getCountByDay">
+        select sum(orders.money) as sumMoney, count(*) as sumNum, DATE(finish_time) as dateTime from orders
+        <if test="start!=null and end!=null">
+            <where>
+                and finish_time &gt; #{start}
+                and finish_time &lt; #{end}
+            </where>
+        </if>
+        GROUP BY DATE(orders.finish_time)
+    </select>
+</mapper>

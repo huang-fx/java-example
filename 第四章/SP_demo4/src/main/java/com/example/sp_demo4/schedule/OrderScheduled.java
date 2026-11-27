@@ -15,8 +15,6 @@ public class OrderScheduled {
     @Autowired
     OrderRepository orderRepository;
     @Autowired
-    OrderScheduled orderScheduled;
-    @Autowired
     private OrderService orderService;
 
     @Scheduled(cron = "0 0 0 * * ?")

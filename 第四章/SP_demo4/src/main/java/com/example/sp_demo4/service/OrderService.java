@@ -1,5 +1,7 @@
 package com.example.sp_demo4.service;
 
+import com.example.sp_demo4.model.dto.CountByDayDTO;
+import com.example.sp_demo4.model.dto.CountDTO;
 import com.example.sp_demo4.model.dto.InsertOrderDTO;
 import com.example.sp_demo4.model.entity.Orders;
 import com.example.sp_demo4.model.entity.UserMoney;
@@ -14,7 +16,12 @@ import org.springframework.stereotype.Service;
 import java.lang.module.ModuleFinder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -91,5 +98,34 @@ public class OrderService {
                 return BaseVo.success(null);
             }
         }
+    }
+    public BaseVo<CountDTO> getCount(int type) {
+        if (type == 0) {
+            // 获取昨天的日期
+            LocalDate today = LocalDate.now();
+            LocalDate yesterday = today.minusDays(1);
+            // LocalDate->LocalDateTime
+            LocalDateTime start = yesterday.atTime(LocalTime.of(0, 0, 0));   // 年月日 00:00:00
+            LocalDateTime end = yesterday.atTime(LocalTime.of(23, 59, 59));   // 年月日 23:59:59
+            // 查数据库
+            return BaseVo.success(orderRepository.getCount(start, end));
+        } else if (type == 1) {
+            // 获取本月第一天到本月最后一天
+            LocalDate today = LocalDate.now();
+            LocalDate firstDayOfMonth = today.with(TemporalAdjusters.firstDayOfMonth());
+            LocalDate endDayOfMonth = today.with(TemporalAdjusters.lastDayOfMonth());
+            LocalDateTime start = firstDayOfMonth.atTime(LocalTime.of(0, 0, 0));
+            LocalDateTime end = endDayOfMonth.atTime(LocalTime.of(23, 59, 59));
+            // 查数据库
+            return BaseVo.success(orderRepository.getCount(start, end));
+        } else if (type == 2) {
+            // 不加where查数据库
+            return BaseVo.success(orderRepository.getCount(null, null));
+        }
+        return BaseVo.success(null);
+    }
+    public BaseVo<List<CountByDayDTO>> getCountByDay(String start, String end) {
+        List<CountByDayDTO> countByDayDTOList = orderRepository.getCountByDay(start, end);
+        return BaseVo.success(countByDayDTOList);
     }
 }

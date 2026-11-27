@@ -1,14 +1,15 @@
 package com.example.sp_demo4.controller;
 
+import com.example.sp_demo4.model.dto.CountByDayDTO;
+import com.example.sp_demo4.model.dto.CountDTO;
 import com.example.sp_demo4.model.dto.InsertOrderDTO;
 import com.example.sp_demo4.model.dto.OrderIdDTO;
 import com.example.sp_demo4.model.vo.BaseVo;
 import com.example.sp_demo4.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -26,5 +27,14 @@ public class OrderController {
         } catch (RuntimeException err) {
             return BaseVo.fail(err.getMessage(), null);
         }
+    }
+    @GetMapping("/count")
+    public BaseVo<CountDTO> count(@RequestParam int type) {
+        // type值 0-查昨天 1-查本月 2-查所有
+        return orderService.getCount(type);
+    }
+    @GetMapping("/countByDay")
+    public BaseVo<List<CountByDayDTO>> countByDay(String start, String end) {
+        return orderService.getCountByDay(start, end);
     }
 }
